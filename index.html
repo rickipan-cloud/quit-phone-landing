@@ -204,51 +204,134 @@
         }
 
         @media (max-width: 768px) {
+            /* 全局 */
+            body { font-size: 14px; }
+
+            /* 导航栏 */
+            nav .max-w-6xl { padding: 0 16px; }
+
+            /* 步骤连接线 */
             .step-connector::after {
                 display: none;
             }
+
+            /* Hero 区域 */
+            .hero-section-grid {
+                grid-template-columns: 1fr !important;
+                text-align: center;
+            }
+            .hero-title { font-size: 32px !important; line-height: 1.2 !important; }
+            .hero-subtitle { font-size: 18px !important; }
+            .hero-section-grid p { max-width: 100% !important; }
+            .hero-section-grid .flex { justify-content: center; }
+
+            /* 手机 Mockup 尺寸 */
             .phone-mockup {
-                width: 160px;
-                height: 350px;
+                width: 220px;
+                height: 476px;
+                border-radius: 30px;
+                padding: 5px;
+            }
+            .phone-screen {
+                border-radius: 25px;
             }
             .phone-mockup .status-bar {
-                padding: 5px 12px 2px;
-                font-size: 8px;
-            }
-            .phone-mockup .status-bar .time {
+                padding: 6px 14px 3px;
                 font-size: 9px;
             }
+            .phone-mockup .status-bar .time {
+                font-size: 10px;
+            }
             .phone-mockup .status-bar .right {
-                font-size: 7px;
+                font-size: 8px;
                 gap: 2px;
             }
             .phone-mockup .status-bar .right svg {
                 width: 10px;
-                height: 7px;
+                height: 8px;
             }
             .phone-mockup .bottom-nav {
                 padding: 4px 0 12px;
             }
             .phone-mockup .nav-item {
-                font-size: 7px;
+                font-size: 8px;
                 gap: 1px;
             }
             .phone-mockup .nav-item svg {
                 width: 16px;
                 height: 16px;
             }
-            /* 手机端 mockup 改为单列 */
+
+            /* 手机端 phone-grid 改为单列 */
             .phone-grid {
                 grid-template-columns: 1fr !important;
-                max-width: 200px !important;
+                max-width: 240px !important;
                 gap: 24px !important;
             }
+
+            /* 痛点 / 场景 / FAQ 卡片 */
+            .pain-grid, .scenario-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* 四步流程 */
+            .steps-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+            }
+            .steps-grid .feature-card {
+                padding: 16px !important;
+            }
+
+            /* 功能亮点 */
+            .feature-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* 数据统计 */
+            .stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+            }
+            .stats-grid .text-3xl, .stats-grid .md\:text-4xl {
+                font-size: 24px !important;
+            }
+
+            /* 用户评价 */
+            .reviews-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* 底部 CTA */
+            .cta-title { font-size: 28px !important; }
+            .cta-buttons {
+                flex-direction: column !important;
+                align-items: center;
+            }
+
+            /* Section padding */
+            section { padding-top: 60px !important; padding-bottom: 60px !important; }
         }
 
         @media (max-width: 480px) {
+            .hero-title { font-size: 28px !important; }
+            .hero-subtitle { font-size: 16px !important; }
+
             .phone-mockup {
-                width: 140px;
-                height: 310px;
+                width: 200px;
+                height: 435px;
+                border-radius: 28px;
+                padding: 4px;
+            }
+            .phone-screen {
+                border-radius: 24px;
+            }
+            .phone-grid {
+                max-width: 220px !important;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr !important;
             }
         }
     </style>
@@ -272,14 +355,14 @@
 
     <!-- ==================== Hero 区域 ==================== -->
     <section class="gradient-bg min-h-screen flex items-center pt-16">
-        <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+        <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center hero-section-grid">
             <div class="text-white space-y-6">
                 <div class="inline-flex items-center bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm">
                     <span class="mr-2"></span> 睡前打卡 PWA 应用
                 </div>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
+                <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
                     放下手机<br>
-                    <span class="text-2xl md:text-3xl lg:text-4xl font-bold opacity-90">睡前打卡，培养健康习惯</span>
+                    <span class="hero-subtitle text-2xl md:text-3xl lg:text-4xl font-bold opacity-90">睡前打卡，培养健康习惯</span>
                 </h1>
                 <p class="text-base md:text-lg opacity-90 leading-relaxed max-w-md">
                     每晚记录放下手机的时间，开始读书、冥想、护肤等健康活动。<br class="hidden md:block">
@@ -365,7 +448,7 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="pain-grid grid md:grid-cols-3 gap-8">
                 <div class="text-center fade-in">
                     <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <span class="text-3xl">😴</span>
@@ -416,7 +499,7 @@
             </div>
 
             <!-- 四步流程 -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-20">
+            <div class="steps-grid grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-20">
                 <div class="feature-card bg-white rounded-2xl p-5 md:p-6 text-center shadow-sm fade-in step-connector">
                     <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <svg class="w-7 h-7 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -455,7 +538,7 @@
             </div>
 
             <!-- 功能亮点 -->
-            <div class="grid md:grid-cols-3 gap-6">
+            <div class="feature-grid grid md:grid-cols-3 gap-6">
                 <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
                     <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-4">
                         <svg class="w-6 h-6 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -978,7 +1061,7 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="scenario-grid grid md:grid-cols-2 gap-6">
                 <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
@@ -1058,7 +1141,7 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center mb-12">
+            <div class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-6 text-center mb-12">
                 <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 fade-in">
                     <div class="text-3xl md:text-4xl font-black mb-1">10,000+</div>
                     <div class="text-sm opacity-80">活跃用户</div>
@@ -1083,7 +1166,7 @@
                     <span class="text-xl">💬</span>
                     <h3 class="text-xl font-bold">用户评价</h3>
                 </div>
-                <div class="grid md:grid-cols-3 gap-4">
+                <div class="reviews-grid grid md:grid-cols-3 gap-4">
                     <div class="bg-white/10 rounded-xl p-4">
                         <div class="flex items-center mb-2">
                             <span class="text-yellow-300 text-xs">⭐⭐⭐⭐⭐</span>
