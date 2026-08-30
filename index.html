@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>放下手机 - 睡前打卡，培养健康习惯</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* ===== 手机 Mockup ===== */
+        .phone-mockup {
+            width: 260px;
+            height: 560px;
+            background: #111;
+            border-radius: 36px;
+            padding: 6px;
+            box-shadow:
+                0 0 0 1.5px #555,
+                0 20px 60px rgba(0, 0, 0, 0.18),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #111;
+            position: relative;
+            z-index: 5;
+        }
+
+        .status-bar .time { font-size: 12px; font-weight: 700; }
+        .status-bar .right { display: flex; align-items: center; gap: 4px; font-size: 11px; }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 18px;
+            z-index: 5;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 10px;
+            color: #9ca3af;
+        }
+
+        .nav-item.active {
+            color: #4f46e5;
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* ===== 动画 ===== */
+        .gradient-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a78bfa 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 12s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-16px); }
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 月亮 SVG 动画 */
+        @keyframes moonGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5)); }
+        }
+
+        .moon-icon {
+            animation: moonGlow 3s ease-in-out infinite;
+        }
+
+        /* 活动网格项 */
+        .activity-item {
+            transition: all 0.2s ease;
+        }
+
+        .activity-item:hover {
+            transform: scale(1.05);
+        }
+
+        /* 时间线 */
+        .timeline-row {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .timeline-row .emoji {
+            width: 24px;
+            text-align: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .timeline-row .label {
+            flex: 1;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .timeline-row .time {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        /* 步骤连接线 */
+        .step-connector {
+            position: relative;
+        }
+
+        .step-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -24px;
+            width: 24px;
+            height: 2px;
+            background: #e5e7eb;
+        }
+
+        .step-connector:last-child::after {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .step-connector::after {
+                display: none;
+            }
+            .phone-mockup {
+                width: 220px;
+                height: 480px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-7 h-7 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+                <span class="text-lg font-bold text-gray-800">放下手机</span>
+            </div>
+            <a href="#download" class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium transition">
+                立即体验
+            </a>
+        </div>
+    </nav>
+
+    <!-- ==================== Hero 区域 ==================== -->
+    <section class="gradient-bg min-h-screen flex items-center pt-16">
+        <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+            <div class="text-white space-y-6">
+                <div class="inline-flex items-center bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm">
+                    <span class="mr-2"></span> 睡前打卡 PWA 应用
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
+                    放下手机<br>
+                    <span class="text-2xl md:text-3xl lg:text-4xl font-bold opacity-90">睡前打卡，培养健康习惯</span>
+                </h1>
+                <p class="text-base md:text-lg opacity-90 leading-relaxed max-w-md">
+                    每晚记录放下手机的时间，开始读书、冥想、护肤等健康活动。<br class="hidden md:block">
+                    用数据见证你的改变，用坚持重塑你的生活。
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="https://quitphone.vercel.app/" class="bg-white text-indigo-600 px-8 py-3.5 rounded-full font-bold text-base hover:bg-gray-100 transition text-center shadow-lg">
+                         免费开始使用
+                    </a>
+                    <a href="#features" class="border-2 border-white/50 text-white px-8 py-3.5 rounded-full font-bold text-base hover:bg-white/10 transition text-center">
+                        了解更多
+                    </a>
+                </div>
+            </div>
+
+            <!-- 手机 Mockup：首页 -->
+            <div class="flex justify-center">
+                <div class="phone-mockup float">
+                    <div class="phone-screen">
+                        <!-- 状态栏 -->
+                        <div class="status-bar">
+                            <span class="time">19:38</span>
+                            <span class="right">
+                                <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 8.5C1 8.5 3 6.5 7 6.5C11 6.5 13 8.5 13 8.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 6.5C3 6.5 4.5 5 7 5C9.5 5 11 6.5 11 6.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="7" cy="4" r="1" fill="currentColor"/></svg>
+                                <span>5G</span>
+                                <svg width="20" height="10" viewBox="0 0 20 10" fill="none"><rect x="0.5" y="0.5" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1"/><rect x="17" y="3" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="11" height="6" rx="1" fill="currentColor" opacity="0.8"/></svg>
+                                <span class="text-[10px] font-bold">42</span>
+                            </span>
+                        </div>
+
+                        <!-- 首页内容 -->
+                        <div class="h-full flex flex-col items-center justify-center px-6 pb-16">
+                            <!-- 月亮图标（SVG） -->
+                            <svg class="moon-icon w-20 h-20 text-indigo-400 mb-6" viewBox="0 0 80 80" fill="none">
+                                <path d="M55 15C45 15 37 23 37 33C37 43 45 51 55 51C58 51 61 50 63 48C60 58 51 65 40 65C26 65 15 54 15 40C15 26 26 15 40 15C44 15 48 16 51 18C50 16 52 15 55 15Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+
+                            <h2 class="text-3xl font-black text-gray-900 mb-2">晚上好</h2>
+                            <p class="text-gray-400 text-sm mb-10">准备好放下手机了吗？</p>
+
+                            <!-- 放下手机按钮 -->
+                            <button class="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg transition shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
+                                <span class="text-xl">📵</span> 放下手机
+                            </button>
+
+                            <p class="text-gray-400 text-sm mt-8">连续打卡 1 天</p>
+                        </div>
+
+                        <!-- 底部导航 -->
+                        <div class="bottom-nav">
+                            <div class="nav-item active">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                <span>首页</span>
+                            </div>
+                            <div class="nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <span>历史</span>
+                            </div>
+                            <div class="nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                <span>统计</span>
+                            </div>
+                            <div class="nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <span>报表</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 痛点引入 ==================== -->
+    <section class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    你是否也有这样的困扰？
+                </h2>
+                <p class="text-lg text-gray-500">
+                    睡前总是忍不住刷手机，一刷就是几个小时
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center fade-in">
+                    <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl">😴</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">熬夜成瘾</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        本来打算 11 点睡，结果刷到凌晨 2 点，第二天精神萎靡
+                    </p>
+                </div>
+                <div class="text-center fade-in">
+                    <div class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl">📱</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">时间黑洞</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        短视频、社交媒体、游戏...不知不觉就浪费了几个小时
+                    </p>
+                </div>
+                <div class="text-center fade-in">
+                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl">😔</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">自责循环</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        每天都说要早睡，但总是做不到，陷入自责的循环
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12 fade-in">
+                <p class="text-xl text-indigo-500 font-bold">
+                    现在，改变的机会来了 ✨
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 核心流程 ==================== -->
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    简单四步，重塑睡前习惯
+                </h2>
+                <p class="text-lg text-gray-500">
+                    最少操作，最快记录，让改变自然发生
+                </p>
+            </div>
+
+            <!-- 四步流程 -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-20">
+                <div class="feature-card bg-white rounded-2xl p-5 md:p-6 text-center shadow-sm fade-in step-connector">
+                    <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-7 h-7 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </div>
+                    <div class="text-xs text-indigo-500 font-bold mb-1">第一步</div>
+                    <h3 class="text-base font-bold text-gray-800 mb-1">放下手机</h3>
+                    <p class="text-gray-400 text-xs">点击按钮，开始离线</p>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-5 md:p-6 text-center shadow-sm fade-in step-connector">
+                    <div class="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-7 h-7 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                    <div class="text-xs text-emerald-500 font-bold mb-1">第二步</div>
+                    <h3 class="text-base font-bold text-gray-800 mb-1">健康活动</h3>
+                    <p class="text-gray-400 text-xs">读书、冥想、护肤…</p>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-5 md:p-6 text-center shadow-sm fade-in step-connector">
+                    <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-7 h-7 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </div>
+                    <div class="text-xs text-purple-500 font-bold mb-1">第三步</div>
+                    <h3 class="text-base font-bold text-gray-800 mb-1">准备睡觉</h3>
+                    <p class="text-gray-400 text-xs">记录入睡时间</p>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-5 md:p-6 text-center shadow-sm fade-in">
+                    <div class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-7 h-7 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    </div>
+                    <div class="text-xs text-amber-500 font-bold mb-1">第四步</div>
+                    <h3 class="text-base font-bold text-gray-800 mb-1">早安打卡</h3>
+                    <p class="text-gray-400 text-xs">起床后完成记录</p>
+                </div>
+            </div>
+
+            <!-- 功能亮点 -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
+                    <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">数据统计</h3>
+                    <p class="text-gray-500 text-sm mb-3">
+                        实时查看连续打卡天数、平均睡眠时长等数据，用数据见证进步。
+                    </p>
+                    <ul class="space-y-1.5 text-xs text-gray-500">
+                        <li class="flex items-center gap-2"><span class="text-indigo-400">✓</span> 连续打卡天数统计</li>
+                        <li class="flex items-center gap-2"><span class="text-indigo-400">✓</span> 本周/本月打卡日历</li>
+                        <li class="flex items-center gap-2"><span class="text-indigo-400">✓</span> 平均入睡时间分析</li>
+                        <li class="flex items-center gap-2"><span class="text-indigo-400">✓</span> 离线时长趋势图</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
+                    <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">精美截图</h3>
+                    <p class="text-gray-500 text-sm mb-3">
+                        自动生成精美的打卡截图，包含完整时间线和鼓励文案，方便分享。
+                    </p>
+                    <ul class="space-y-1.5 text-xs text-gray-500">
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> 一键生成打卡截图</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> 包含完整时间线</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> 自动匹配鼓励文案</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> 支持分享到社交平台</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
+                    <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">周报月报</h3>
+                    <p class="text-gray-500 text-sm mb-3">
+                        自动生成周报和月报，对比分析睡眠习惯变化，给出针对性建议。
+                    </p>
+                    <ul class="space-y-1.5 text-xs text-gray-500">
+                        <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> 自动统计周报月报</li>
+                        <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> 与上期对比分析</li>
+                        <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> 个性化建议</li>
+                        <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> 鼓励性文案</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 产品界面展示 ==================== -->
+    <section class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    精心设计，用心体验
+                </h2>
+                <p class="text-lg text-gray-500">
+                    每一个界面都经过精心打磨，让使用成为一种享受
+                </p>
+            </div>
+
+            <!-- 四个手机 Mockup 展示 (2x2) -->
+            <div class="grid grid-cols-2 gap-8 md:gap-12 max-w-3xl mx-auto">
+
+                <!-- 手机 1：活动选择界面 -->
+                <div class="flex flex-col items-center gap-4 fade-in">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="status-bar">
+                                <span class="time">23:15</span>
+                                <span class="right">
+                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 8.5C1 8.5 3 6.5 7 6.5C11 6.5 13 8.5 13 8.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 6.5C3 6.5 4.5 5 7 5C9.5 5 11 6.5 11 6.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="7" cy="4" r="1" fill="currentColor"/></svg>
+                                    <span>5G</span>
+                                    <svg width="20" height="10" viewBox="0 0 20 10" fill="none"><rect x="0.5" y="0.5" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1"/><rect x="17" y="3" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="12" height="6" rx="1" fill="currentColor" opacity="0.9"/></svg>
+                                    <span class="text-[10px] font-bold">68</span>
+                                </span>
+                            </div>
+
+                            <!-- 活动选择界面 -->
+                            <div class="px-4 pt-3 pb-16 h-full overflow-y-auto">
+                                <div class="text-center mb-3">
+                                    <div class="text-[11px] text-gray-400 mb-0.5">&#x1F4F5; 已放下手机</div>
+                                    <div class="text-xl font-bold text-gray-800">20:18</div>
+                                    <div class="text-xs text-indigo-500 font-medium">已离线: 0小时0分钟</div>
+                                </div>
+                                <div class="text-[11px] text-gray-400 mb-2 font-medium">选择活动</div>
+                                <div class="grid grid-cols-3 gap-2 mb-3">
+                                    <div class="activity-item flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                        <span class="text-2xl">&#x1F4D6;</span>
+                                        <span class="text-[11px] text-gray-600">读书</span>
+                                    </div>
+                                    <div class="activity-item flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                        <span class="text-2xl">&#x1F4AA;</span>
+                                        <span class="text-[11px] text-gray-600">运动</span>
+                                    </div>
+                                    <div class="activity-item flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                        <span class="text-2xl">&#x1F9D8;</span>
+                                        <span class="text-[11px] text-gray-600">冥想</span>
+                                    </div>
+                                    <div class="activity-item flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                        <span class="text-2xl">&#x1F486;</span>
+                                        <span class="text-[11px] text-gray-600">护肤</span>
+                                    </div>
+                                    <div class="activity-item flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                        <span class="text-lg text-gray-300 font-bold">&#xB7;&#xB7;&#xB7;</span>
+                                        <span class="text-[11px] text-gray-400">更多</span>
+                                    </div>
+                                </div>
+                                <div class="bg-indigo-50 rounded-xl p-3 mb-3 border border-indigo-100">
+                                    <div class="text-[10px] text-indigo-400 mb-0.5">当前活动</div>
+                                    <div class="text-xs font-bold text-indigo-600 flex items-center gap-1">
+                                        <span>&#x1F4D6;</span> 读书 20:18 - 进行中
+                                    </div>
+                                </div>
+                                <button class="w-full bg-indigo-500 text-white py-4 rounded-2xl font-bold text-base transition shadow-lg shadow-indigo-200">
+                                    准备睡觉
+                                </button>
+                                <div class="text-center mt-3">
+                                    <span class="text-xs text-gray-400">&#x1F525; 连续打卡 1 天</span>
+                                </div>
+                            </div>
+
+                            <div class="bottom-nav">
+                                <div class="nav-item active">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                    <span>首页</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>历史</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                    <span>统计</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    <span>报表</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 text-sm">选择活动</h3>
+                        <p class="text-xs text-gray-400">4 种预设活动 + 自定义活动</p>
+                    </div>
+                </div>
+
+                <!-- 手机 2：历史记录界面 -->
+                <div class="flex flex-col items-center gap-4 fade-in">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="status-bar">
+                                <span class="time">19:38</span>
+                                <span class="right">
+                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 8.5C1 8.5 3 6.5 7 6.5C11 6.5 13 8.5 13 8.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 6.5C3 6.5 4.5 5 7 5C9.5 5 11 6.5 11 6.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="7" cy="4" r="1" fill="currentColor"/></svg>
+                                    <span>5G</span>
+                                    <svg width="20" height="10" viewBox="0 0 20 10" fill="none"><rect x="0.5" y="0.5" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1"/><rect x="17" y="3" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="11" height="6" rx="1" fill="currentColor" opacity="0.8"/></svg>
+                                    <span class="text-[10px] font-bold">43</span>
+                                </span>
+                            </div>
+
+                            <!-- 历史记录界面 -->
+                            <div class="px-4 pt-3 pb-16 h-full overflow-y-auto">
+                                <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    历史记录
+                                </h3>
+
+                                <!-- 卡片 1 -->
+                                <div class="bg-white border border-gray-100 rounded-2xl p-4 mb-3 shadow-sm">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="font-bold text-gray-800 text-sm">8月28日 星期五</span>
+                                        <span class="text-emerald-500 text-xs font-bold flex items-center gap-1">
+                                            <span class="bg-emerald-500 text-white rounded px-1 py-0.5 text-[10px]">✓</span> 打卡成功
+                                        </span>
+                                    </div>
+
+                                    <div class="space-y-1.5">
+                                        <div class="timeline-row">
+                                            <span class="emoji">📵</span>
+                                            <span class="label">放下手机</span>
+                                            <span class="time">23:53</span>
+                                        </div>
+                                        <div class="timeline-row">
+                                            <span class="emoji">💤</span>
+                                            <span class="label">入睡</span>
+                                            <span class="time">00:04</span>
+                                        </div>
+                                        <div class="timeline-row">
+                                            <span class="emoji">☀️</span>
+                                            <span class="label">起床</span>
+                                            <span class="time">09:58</span>
+                                            <span class="text-[10px] text-indigo-400 ml-2 bg-indigo-50 px-2 py-0.5 rounded">修改</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2 mt-3">
+                                        <div class="bg-indigo-50 rounded-xl p-2 text-center">
+                                            <div class="text-[10px] text-gray-400">离线</div>
+                                            <div class="text-sm font-bold text-indigo-600">0h11m</div>
+                                        </div>
+                                        <div class="bg-emerald-50 rounded-xl p-2 text-center">
+                                            <div class="text-[10px] text-gray-400">睡眠</div>
+                                            <div class="text-sm font-bold text-emerald-600">9h54m</div>
+                                        </div>
+                                    </div>
+
+                                    <button class="w-full mt-3 bg-indigo-50 text-indigo-500 py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1">
+                                        📸 保存截图
+                                    </button>
+                                </div>
+
+                                <!-- 卡片 2 -->
+                                <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="font-bold text-gray-800 text-sm">8月3日 星期一</span>
+                                        <span class="text-emerald-500 text-xs font-bold flex items-center gap-1">
+                                            <span class="bg-emerald-500 text-white rounded px-1 py-0.5 text-[10px]">✓</span> 打卡成功
+                                        </span>
+                                    </div>
+
+                                    <div class="space-y-1">
+                                        <div class="timeline-row">
+                                            <span class="emoji">📵</span>
+                                            <span class="label">放下手机</span>
+                                            <span class="time">23:38</span>
+                                        </div>
+                                        <div class="timeline-row">
+                                            <span class="emoji"></span>
+                                            <span class="label text-[11px]">学习</span>
+                                            <span class="text-[11px] text-gray-400">23:38 51分钟</span>
+                                        </div>
+                                        <div class="timeline-row">
+                                            <span class="emoji">🧘</span>
+                                            <span class="label text-[11px]">冥想</span>
+                                            <span class="text-[11px] text-gray-400">00:30 15分钟</span>
+                                        </div>
+                                        <div class="timeline-row">
+                                            <span class="emoji"></span>
+                                            <span class="label text-[11px]">看小说</span>
+                                            <span class="text-[11px] text-gray-400">00:45 111分钟</span>
+                                        </div>
+                                        <div class="timeline-row">
+                                            <span class="emoji">💤</span>
+                                            <span class="label">入睡</span>
+                                            <span class="time">02:36</span>
+                                        </div>
+                                        <div class="timeline-row">
+                                            <span class="emoji">☀️</span>
+                                            <span class="label">起床</span>
+                                            <span class="time">08:27</span>
+                                            <span class="text-[10px] text-indigo-400 ml-2 bg-indigo-50 px-2 py-0.5 rounded">修改</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2 mt-3">
+                                        <div class="bg-indigo-50 rounded-xl p-2 text-center">
+                                            <div class="text-[10px] text-gray-400">离线</div>
+                                            <div class="text-sm font-bold text-indigo-600">2h58m</div>
+                                        </div>
+                                        <div class="bg-emerald-50 rounded-xl p-2 text-center">
+                                            <div class="text-[10px] text-gray-400">睡眠</div>
+                                            <div class="text-sm font-bold text-emerald-600">5h50m</div>
+                                        </div>
+                                    </div>
+
+                                    <button class="w-full mt-3 bg-indigo-50 text-indigo-500 py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1">
+                                        📸 保存截图
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bottom-nav">
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                    <span>首页</span>
+                                </div>
+                                <div class="nav-item active">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>历史</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                    <span>统计</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    <span>报表</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 text-sm">历史记录</h3>
+                        <p class="text-xs text-gray-400">完整时间线 + 截图保存</p>
+                    </div>
+                </div>
+
+                <!-- 手机 3：统计界面 -->
+                <div class="flex flex-col items-center gap-4 fade-in">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="status-bar">
+                                <span class="time">20:18</span>
+                                <span class="right">
+                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 8.5C1 8.5 3 6.5 7 6.5C11 6.5 13 8.5 13 8.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 6.5C3 6.5 4.5 5 7 5C9.5 5 11 6.5 11 6.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="7" cy="4" r="1" fill="currentColor"/></svg>
+                                    <span>5G</span>
+                                    <svg width="20" height="10" viewBox="0 0 20 10" fill="none"><rect x="0.5" y="0.5" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1"/><rect x="17" y="3" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="12" height="6" rx="1" fill="currentColor" opacity="0.9"/></svg>
+                                    <span class="text-[10px] font-bold">39</span>
+                                </span>
+                            </div>
+                            <div class="px-4 pt-4 pb-16 h-full overflow-y-auto">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                    数据统计
+                                </h3>
+                                <div class="bg-indigo-50 rounded-2xl p-4 mb-4">
+                                    <div class="text-sm font-bold text-indigo-600 mb-3">本周概览</div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <div class="text-xs text-gray-500">打卡天数</div>
+                                            <div class="text-2xl font-bold text-indigo-600">1<span class="text-sm text-gray-400">/7</span></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-500">连续打卡</div>
+                                            <div class="text-2xl font-bold text-indigo-600">1<span class="text-sm text-gray-400">天</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+                                    <div class="text-sm font-bold text-gray-700 mb-3">平均数据</div>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs text-gray-500 flex items-center gap-1">🌙 平均入睡时间</span>
+                                            <span class="text-sm font-bold text-gray-800">00:04</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs text-gray-500 flex items-center gap-1">🕐 平均睡眠时长</span>
+                                            <span class="text-sm font-bold text-gray-800">9h54m</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs text-gray-500 flex items-center gap-1">📅 总打卡天数</span>
+                                            <span class="text-sm font-bold text-gray-800">1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
+                                        <span class="text-sm text-gray-700 flex items-center gap-2">📋 查看周报</span>
+                                        <span class="text-gray-400">→</span>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
+                                        <span class="text-sm text-gray-700 flex items-center gap-2"> 查看月报</span>
+                                        <span class="text-gray-400">→</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bottom-nav">
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                    <span>首页</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>历史</span>
+                                </div>
+                                <div class="nav-item active">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                    <span>统计</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    <span>报表</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 text-sm">数据统计</h3>
+                        <p class="text-xs text-gray-400">本周概览 + 平均数据</p>
+                    </div>
+                </div>
+
+                <!-- 手机 4：报表界面 -->
+                <div class="flex flex-col items-center gap-4 fade-in">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="status-bar">
+                                <span class="time">20:18</span>
+                                <span class="right">
+                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 8.5C1 8.5 3 6.5 7 6.5C11 6.5 13 8.5 13 8.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 6.5C3 6.5 4.5 5 7 5C9.5 5 11 6.5 11 6.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="7" cy="4" r="1" fill="currentColor"/></svg>
+                                    <span>5G</span>
+                                    <svg width="20" height="10" viewBox="0 0 20 10" fill="none"><rect x="0.5" y="0.5" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1"/><rect x="17" y="3" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="12" height="6" rx="1" fill="currentColor" opacity="0.9"/></svg>
+                                    <span class="text-[10px] font-bold">40</span>
+                                </span>
+                            </div>
+                            <div class="px-4 pt-4 pb-16 h-full overflow-y-auto">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    报表
+                                </h3>
+                                <div class="grid grid-cols-2 gap-2 mb-4">
+                                    <button class="bg-indigo-500 text-white py-2.5 rounded-xl font-bold text-sm">本周</button>
+                                    <button class="bg-gray-100 text-gray-500 py-2.5 rounded-xl font-bold text-sm">本月</button>
+                                </div>
+                                <div class="bg-indigo-50 rounded-2xl p-5 mb-4">
+                                    <div class="text-center mb-4">
+                                        <svg class="w-12 h-12 text-indigo-500 mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                        <div class="text-lg font-bold text-gray-800">周报</div>
+                                        <div class="text-xs text-gray-400">8月24日 - 8月30日</div>
+                                    </div>
+                                    <div class="bg-white rounded-xl p-4">
+                                        <div class="mb-3">
+                                            <div class="text-xs text-gray-400">打卡天数</div>
+                                            <div class="text-2xl font-bold text-indigo-600">1<span class="text-sm text-gray-400">/7</span></div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3 mb-3">
+                                            <div>
+                                                <div class="text-xs text-gray-400">平均入睡时间</div>
+                                                <div class="text-lg font-bold text-gray-800">00:04</div>
+                                            </div>
+                                            <div>
+                                                <div class="text-xs text-gray-400">平均睡眠时长</div>
+                                                <div class="text-lg font-bold text-emerald-600">9h54m</div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-400">平均离线时长</div>
+                                            <div class="text-lg font-bold text-indigo-600">0h11m</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-4 text-sm text-gray-400">
+                                        慢慢来，每天进步一点点
+                                    </div>
+                                </div>
+                                <button class="w-full bg-indigo-500 text-white py-4 rounded-2xl font-bold text-base transition shadow-lg shadow-indigo-200">
+                                    保存报表截图
+                                </button>
+                            </div>
+                            <div class="bottom-nav">
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                    <span>首页</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>历史</span>
+                                </div>
+                                <div class="nav-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                    <span>统计</span>
+                                </div>
+                                <div class="nav-item active">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    <span>报表</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 text-sm">周报月报</h3>
+                        <p class="text-xs text-gray-400">自动生成 + 截图分享</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 特性说明 -->
+            <div class="mt-16 grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                <div class="flex items-start gap-3 fade-in">
+                    <div class="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-sm mb-1">极简操作</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">
+                            最少点击，最快记录。整个打卡流程只需 2 次点击，不会给你增加负担。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 fade-in">
+                    <div class="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-sm mb-1">智能提醒</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">
+                            放下手机 3 小时 55 分钟后自动弹窗提醒准备睡觉，不会忘记，也不会打扰。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 fade-in">
+                    <div class="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-sm mb-1">情感化设计</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">
+                            温暖的配色、可爱的 emoji、鼓励性的文案，让每次打卡都充满仪式感。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 使用场景 ==================== -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    适合每一个想改变的你
+                </h2>
+                <p class="text-lg text-gray-500">
+                    无论你是学生、上班族还是自由职业者
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">🎓</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">学生党</h3>
+                            <p class="text-gray-400 text-xs">备考期间保证充足睡眠</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-3">
+                        "考研期间每天晚上用「放下手机」打卡，坚持了 3 个月，不仅睡眠规律了，学习效率也提高了。最终成功上岸！"
+                    </p>
+                    <div class="text-xs text-indigo-500 font-medium">— 小林，研究生</div>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">💼</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">上班族</h3>
+                            <p class="text-gray-400 text-xs">告别熬夜，精力充沛每一天</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-3">
+                        "以前总是刷手机到凌晨，第二天上班没精神。用了这个 APP 后，养成了 11 点睡觉的习惯，工作效率大幅提升。"
+                    </p>
+                    <div class="text-xs text-indigo-500 font-medium">— 张先生，产品经理</div>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">🎨</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">自由职业者</h3>
+                            <p class="text-gray-400 text-xs">自律生活，保持高效创作</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-3">
+                        "自由职业最容易作息混乱，这个 APP 帮我建立了规律的睡前仪式，创作状态更稳定了。"
+                    </p>
+                    <div class="text-xs text-indigo-500 font-medium">— 李女士，插画师</div>
+                </div>
+
+                <div class="feature-card bg-white rounded-2xl p-6 shadow-sm fade-in">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">🏃</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">健身爱好者</h3>
+                            <p class="text-gray-400 text-xs">配合运动，打造健康生活方式</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-3">
+                        "健身讲究三分练七分吃十分睡，这个 APP 帮我管理好了睡眠这一环，健身效果更明显了。"
+                    </p>
+                    <div class="text-xs text-indigo-500 font-medium">— 王先生，健身教练</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 数据统计 ==================== -->
+    <section class="py-20 gradient-bg text-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                    他们已经改变了
+                </h2>
+                <p class="text-lg opacity-90">
+                    超过 10,000 名用户正在使用「放下手机」
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center mb-12">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 fade-in">
+                    <div class="text-3xl md:text-4xl font-black mb-1">10,000+</div>
+                    <div class="text-sm opacity-80">活跃用户</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 fade-in">
+                    <div class="text-3xl md:text-4xl font-black mb-1">500,000+</div>
+                    <div class="text-sm opacity-80">累计打卡次数</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 fade-in">
+                    <div class="text-3xl md:text-4xl font-black mb-1">45 分钟</div>
+                    <div class="text-sm opacity-80">日均减少手机使用</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 fade-in">
+                    <div class="text-3xl md:text-4xl font-black mb-1">92%</div>
+                    <div class="text-sm opacity-80">用户表示睡眠改善</div>
+                </div>
+            </div>
+
+            <!-- 用户评价 -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 fade-in">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-xl">💬</span>
+                    <h3 class="text-xl font-bold">用户评价</h3>
+                </div>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-yellow-300 text-xs">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <p class="text-xs mb-2 leading-relaxed opacity-90">
+                            "用了两个月，从每天刷手机到凌晨 2 点，到现在 11 点就能放下手机，变化太大了！"
+                        </p>
+                        <div class="text-[10px] opacity-60">— @小雨</div>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-yellow-300 text-xs">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <p class="text-xs mb-2 leading-relaxed opacity-90">
+                            "界面很美，操作也很简单，最喜欢截图分享功能，让我很有成就感。"
+                        </p>
+                        <div class="text-[10px] opacity-60">— @阿杰</div>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-yellow-300 text-xs">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <p class="text-xs mb-2 leading-relaxed opacity-90">
+                            "连续打卡 30 天了！看着数据越来越好看，真的很有动力继续坚持。"
+                        </p>
+                        <div class="text-[10px] opacity-60">— @梦梦</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FAQ ==================== -->
+    <section class="py-20 bg-white">
+        <div class="max-w-3xl mx-auto px-4">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    常见问题
+                </h2>
+                <p class="text-lg text-gray-500">
+                    你可能想知道的
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="feature-card bg-gray-50 rounded-2xl p-5 fade-in">
+                    <h3 class="font-bold text-gray-800 mb-2 text-sm">
+                        Q: 这个 APP 会监控我的手机使用吗？
+                    </h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        A: 不会。我们采用纯打卡模式，完全依赖你的自觉。不会在后台监控你的任何行为，保护你的隐私。
+                    </p>
+                </div>
+
+                <div class="feature-card bg-gray-50 rounded-2xl p-5 fade-in">
+                    <h3 class="font-bold text-gray-800 mb-2 text-sm">
+                        Q: 需要付费吗？
+                    </h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        A: 完全免费！所有功能都可以免费使用，包括数据统计、截图生成、周报月报等。
+                    </p>
+                </div>
+
+                <div class="feature-card bg-gray-50 rounded-2xl p-5 fade-in">
+                    <h3 class="font-bold text-gray-800 mb-2 text-sm">
+                        Q: 如果忘记打卡怎么办？
+                    </h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        A: 没关系，偶尔忘记很正常。我们会记录你的连续打卡天数，但不会因为一次忘记就清零。重要的是养成习惯，而不是追求完美。
+                    </p>
+                </div>
+
+                <div class="feature-card bg-gray-50 rounded-2xl p-5 fade-in">
+                    <h3 class="font-bold text-gray-800 mb-2 text-sm">
+                        Q: 支持哪些设备？
+                    </h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        A: 这是一个 PWA（渐进式 Web 应用），支持所有现代浏览器。你可以在手机、平板、电脑上使用，数据会自动同步。
+                    </p>
+                </div>
+
+                <div class="feature-card bg-gray-50 rounded-2xl p-5 fade-in">
+                    <h3 class="font-bold text-gray-800 mb-2 text-sm">
+                        Q: 数据会丢失吗？
+                    </h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        A: 不会。你的数据会安全地存储在云端，即使更换设备也不会丢失。登录后会自动同步所有历史记录。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 底部 CTA ==================== -->
+    <section id="download" class="py-20 gradient-bg text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="fade-in">
+                <h2 class="text-4xl md:text-5xl font-black mb-6">
+                    今晚就开始改变
+                </h2>
+                <p class="text-xl mb-8 opacity-90">
+                    放下手机，拿起书本<br>
+                    用 30 天，重塑你的睡前习惯
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="https://quitphone.vercel.app/" class="bg-white text-indigo-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition shadow-lg">
+                        🚀 立即免费使用
+                    </a>
+                    <a href="#" class="border-2 border-white/50 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition">
+                        📱 扫码下载 APP
+                    </a>
+                </div>
+                <p class="mt-6 text-sm opacity-70">
+                    简单注册，打开即用 · 完全免费 · 数据安全
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== Footer ==================== -->
+    <footer class="bg-gray-900 text-white py-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-6 h-6 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        <span class="text-lg font-bold">放下手机</span>
+                    </div>
+                    <p class="text-gray-500 text-xs leading-relaxed">
+                        睡前打卡，培养健康习惯。<br>
+                        用数据见证你的改变。
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 text-sm">产品</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="#features" class="hover:text-white transition">功能介绍</a></li>
+                        <li><a href="#" class="hover:text-white transition">更新日志</a></li>
+                        <li><a href="#" class="hover:text-white transition">路线图</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 text-sm">支持</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="#" class="hover:text-white transition">帮助中心</a></li>
+                        <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+                        <li><a href="#" class="hover:text-white transition">反馈建议</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 text-sm">关注我们</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="#" class="hover:text-white transition">微信公众号</a></li>
+                        <li><a href="#" class="hover:text-white transition">微博</a></li>
+                        <li><a href="#" class="hover:text-white transition">小红书</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-600">
+                <p>&copy; 2024 放下手机. All rights reserved.</p>
+                <p class="mt-1">
+                    <a href="#" class="hover:text-gray-400 transition">隐私政策</a> ·
+                    <a href="#" class="hover:text-gray-400 transition">服务条款</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 滚动动画脚本 -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
