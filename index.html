@@ -262,6 +262,28 @@
                 height: 16px;
             }
 
+            /* Hero 首页 mockup 内部自适应 */
+            .hero-section-grid .phone-mockup .phone-screen {
+                font-size: 12px;
+            }
+            .hero-section-grid .phone-mockup .status-bar {
+                padding: 5px 12px 2px;
+            }
+            .hero-section-grid .phone-mockup .status-bar .time {
+                font-size: 9px;
+            }
+            .hero-section-grid .phone-mockup .status-bar .right svg {
+                width: 9px !important;
+                height: 7px !important;
+            }
+            .hero-section-grid .phone-mockup .bottom-nav {
+                padding: 3px 0 10px;
+            }
+            .hero-section-grid .phone-mockup .nav-item svg {
+                width: 14px;
+                height: 14px;
+            }
+
             /* 手机端 phone-grid 改为单列 */
             .phone-grid {
                 grid-template-columns: 1fr !important;
@@ -330,6 +352,29 @@
                 max-width: 220px !important;
             }
 
+            /* Hero 首页 mockup 内部更紧凑 */
+            .hero-section-grid .phone-mockup .phone-screen {
+                font-size: 11px;
+            }
+            .hero-section-grid .phone-mockup h2 {
+                font-size: 22px !important;
+            }
+            .hero-section-grid .phone-mockup button {
+                font-size: 14px !important;
+                padding: 12px 0 !important;
+            }
+            .hero-section-grid .phone-mockup .w-10 {
+                width: 32px !important;
+                height: 32px !important;
+            }
+            .hero-section-grid .phone-mockup .w-10 span {
+                font-size: 12px !important;
+            }
+            .hero-section-grid .phone-mockup .w-24 {
+                width: 72px !important;
+                height: 72px !important;
+            }
+
             .stats-grid {
                 grid-template-columns: 1fr 1fr !important;
             }
@@ -394,9 +439,9 @@
                         </div>
 
                         <!-- 首页内容 -->
-                        <div class="h-full flex flex-col px-6 pb-16 pt-2">
+                        <div class="h-full flex flex-col px-6 pb-14 pt-2">
                             <!-- 用户信息栏 -->
-                            <div class="flex items-center gap-3 mb-10">
+                            <div class="flex items-center gap-3 mb-6">
                                 <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                     <span class="text-indigo-500 font-bold text-base">P</span>
                                 </div>
@@ -404,20 +449,20 @@
                             </div>
 
                             <!-- 月亮图标 -->
-                            <div class="flex-1 flex flex-col items-center justify-center -mt-8">
-                                <svg class="w-28 h-28 text-indigo-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <div class="flex-1 flex flex-col items-center justify-center">
+                                <svg class="w-24 h-24 text-indigo-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                                 </svg>
 
-                                <h2 class="text-[28px] font-black text-gray-900 mb-2">晚上好</h2>
-                                <p class="text-gray-400 text-[15px] mb-10">准备好放下手机了吗？</p>
+                                <h2 class="text-[26px] font-black text-gray-900 mb-1.5">晚上好</h2>
+                                <p class="text-gray-400 text-[14px] mb-8">准备好放下手机了吗？</p>
 
                                 <!-- 放下手机按钮 -->
-                                <button class="w-full bg-[#4F46E5] hover:bg-[#4338CA] text-white py-[18px] rounded-[16px] font-bold text-[17px] transition shadow-lg flex items-center justify-center gap-2">
-                                    <span class="text-xl">📵</span> 放下手机
+                                <button class="w-full bg-[#4F46E5] hover:bg-[#4338CA] text-white py-[16px] rounded-[16px] font-bold text-[16px] transition shadow-lg flex items-center justify-center gap-2">
+                                    <span class="text-lg">📵</span> 放下手机
                                 </button>
 
-                                <p class="text-gray-400 text-[14px] mt-8">🔥 连续打卡 2 天</p>
+                                <p class="text-gray-400 text-[13px] mt-6">🔥 连续打卡 2 天</p>
                             </div>
                         </div>
 
