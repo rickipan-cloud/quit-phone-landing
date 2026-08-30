@@ -18,6 +18,29 @@
 
         /* ===== 手机 Mockup ===== */
         .phone-mockup {
+            --ph-avatar: 40px;
+            --ph-avatar-text: 16px;
+            --ph-moon: 96px;
+            --ph-heading: 26px;
+            --ph-sub: 14px;
+            --ph-btn-text: 16px;
+            --ph-btn-icon: 18px;
+            --ph-btn-py: 16px;
+            --ph-streak: 13px;
+            --ph-user-gap: 12px;
+            --ph-user-mb: 24px;
+            --ph-moon-mb: 12px;
+            --ph-heading-mb: 6px;
+            --ph-sub-mb: 32px;
+            --ph-streak-mt: 24px;
+            --ph-content-px: 24px;
+            --ph-content-pb: 56px;
+            --ph-status-fs: 11px;
+            --ph-status-px: 20px;
+            --ph-nav-fs: 10px;
+            --ph-nav-icon: 22px;
+            --ph-nav-py: 6px 0 18px;
+
             width: 260px;
             height: 560px;
             background: #111;
@@ -38,8 +61,19 @@
             border-radius: 30px;
             overflow: hidden;
             position: relative;
-            font-size: clamp(8px, 3.5vw, 14px);
         }
+
+        /* Hero 首页 mockup 内部元素 — 全部用 CSS 变量控制大小 */
+        .hero-phone-content { padding: 8px var(--ph-content-px) var(--ph-content-pb) !important; }
+        .hero-avatar { width: var(--ph-avatar) !important; height: var(--ph-avatar) !important; }
+        .hero-avatar span { font-size: var(--ph-avatar-text) !important; }
+        .hero-moon { width: var(--ph-moon) !important; height: var(--ph-moon) !important; margin-bottom: var(--ph-moon-mb) !important; }
+        .hero-heading { font-size: var(--ph-heading) !important; margin-bottom: var(--ph-heading-mb) !important; }
+        .hero-sub { font-size: var(--ph-sub) !important; margin-bottom: var(--ph-sub-mb) !important; }
+        .hero-btn { font-size: var(--ph-btn-text) !important; padding: var(--ph-btn-py) 0 !important; }
+        .hero-btn span { font-size: var(--ph-btn-icon) !important; }
+        .hero-streak { font-size: var(--ph-streak) !important; margin-top: var(--ph-streak-mt) !important; }
+        .hero-user-row { gap: var(--ph-user-gap) !important; margin-bottom: var(--ph-user-mb) !important; }
 
         /* 状态栏 */
         .status-bar {
@@ -284,6 +318,27 @@
                 height: 14px;
             }
 
+            /* Hero 首页内容自适应 - 通过覆盖 CSS 变量实现 */
+            .hero-section-grid .phone-mockup {
+                --ph-avatar: 36px;
+                --ph-avatar-text: 14px;
+                --ph-moon: 80px;
+                --ph-heading: 22px;
+                --ph-sub: 12px;
+                --ph-btn-text: 14px;
+                --ph-btn-icon: 16px;
+                --ph-btn-py: 12px;
+                --ph-streak: 11px;
+                --ph-user-gap: 10px;
+                --ph-user-mb: 20px;
+                --ph-moon-mb: 8px;
+                --ph-heading-mb: 4px;
+                --ph-sub-mb: 20px;
+                --ph-streak-mt: 16px;
+                --ph-content-px: 16px;
+                --ph-content-pb: 56px;
+            }
+
             /* 手机端 phone-grid 改为单列 */
             .phone-grid {
                 grid-template-columns: 1fr !important;
@@ -352,27 +407,25 @@
                 max-width: 220px !important;
             }
 
-            /* Hero 首页 mockup 内部更紧凑 */
-            .hero-section-grid .phone-mockup .phone-screen {
-                font-size: 11px;
-            }
-            .hero-section-grid .phone-mockup h2 {
-                font-size: 22px !important;
-            }
-            .hero-section-grid .phone-mockup button {
-                font-size: 14px !important;
-                padding: 12px 0 !important;
-            }
-            .hero-section-grid .phone-mockup .w-10 {
-                width: 32px !important;
-                height: 32px !important;
-            }
-            .hero-section-grid .phone-mockup .w-10 span {
-                font-size: 12px !important;
-            }
-            .hero-section-grid .phone-mockup .w-24 {
-                width: 72px !important;
-                height: 72px !important;
+            /* Hero 首页 mockup 内部更紧凑 - 通过覆盖 CSS 变量 */
+            .hero-section-grid .phone-mockup {
+                --ph-avatar: 32px;
+                --ph-avatar-text: 12px;
+                --ph-moon: 72px;
+                --ph-heading: 20px;
+                --ph-sub: 11px;
+                --ph-btn-text: 13px;
+                --ph-btn-icon: 15px;
+                --ph-btn-py: 10px;
+                --ph-streak: 10px;
+                --ph-user-gap: 8px;
+                --ph-user-mb: 16px;
+                --ph-moon-mb: 6px;
+                --ph-heading-mb: 3px;
+                --ph-sub-mb: 16px;
+                --ph-streak-mt: 12px;
+                --ph-content-px: 14px;
+                --ph-content-pb: 52px;
             }
 
             .stats-grid {
@@ -439,10 +492,10 @@
                         </div>
 
                         <!-- 首页内容 -->
-                        <div class="h-full flex flex-col px-6 pb-14 pt-2">
+                        <div class="hero-phone-content h-full flex flex-col px-6 pb-14 pt-2">
                             <!-- 用户信息栏 -->
                             <div class="flex items-center gap-3 mb-6">
-                                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <div class="hero-avatar w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                     <span class="text-indigo-500 font-bold text-base">P</span>
                                 </div>
                                 <span class="text-gray-600 font-medium text-base">papa</span>
@@ -450,19 +503,19 @@
 
                             <!-- 月亮图标 -->
                             <div class="flex-1 flex flex-col items-center justify-center">
-                                <svg class="w-24 h-24 text-indigo-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="hero-moon w-24 h-24 text-indigo-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                                 </svg>
 
-                                <h2 class="text-[26px] font-black text-gray-900 mb-1.5">晚上好</h2>
-                                <p class="text-gray-400 text-[14px] mb-8">准备好放下手机了吗？</p>
+                                <h2 class="hero-heading text-[26px] font-black text-gray-900 mb-1.5">晚上好</h2>
+                                <p class="hero-sub text-gray-400 text-[14px] mb-8">准备好放下手机了吗？</p>
 
                                 <!-- 放下手机按钮 -->
-                                <button class="w-full bg-[#4F46E5] hover:bg-[#4338CA] text-white py-[16px] rounded-[16px] font-bold text-[16px] transition shadow-lg flex items-center justify-center gap-2">
+                                <button class="hero-btn w-full bg-[#4F46E5] hover:bg-[#4338CA] text-white py-[16px] rounded-[16px] font-bold text-[16px] transition shadow-lg flex items-center justify-center gap-2">
                                     <span class="text-lg">📵</span> 放下手机
                                 </button>
 
-                                <p class="text-gray-400 text-[13px] mt-6">🔥 连续打卡 2 天</p>
+                                <p class="hero-streak text-gray-400 text-[13px] mt-6">🔥 连续打卡 2 天</p>
                             </div>
                         </div>
 
